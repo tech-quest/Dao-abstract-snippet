@@ -3,23 +3,27 @@ require_once __DIR__ . '/../../app/Infrastructure/Dao/UserDao.php';
 require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
 require_once __DIR__ . '/../../vendor/autoload.php';
 
+use App\Infrastructure\Dao\SessionDao;
 use App\Infrastructure\Dao\UserDao;
 
 $email = filter_input(INPUT_POST, 'email');
 $name = filter_input(INPUT_POST, 'name');
 $password = filter_input(INPUT_POST, 'password');
 $confirmPassword = filter_input(INPUT_POST, 'confirmPassword');
+$sessionDao = new SessionDao();
 
-session_start();
 if (empty($password) || empty($confirmPassword)) {
-    $_SESSION['errors'][] = 'パスワードを入力してください';
+    $sessionDao->pushErrors('パスワードを入力してください');
 }
 if ($password !== $confirmPassword) {
-    $_SESSION['errors'][] = 'パスワードが一致しません';
+    $sessionDao->pushErrors('パスワードが一致しません');
 }
-if (!empty($_SESSION['errors'])) {
-    $_SESSION['formInputs']['name'] = $name;
-    $_SESSION['formInputs']['email'] = $email;
+if (!empty($sessionDao->getErrors())) {
+    $formInputs = [
+        'name' => $name,
+        'email' => $email,
+    ];
+    $sessionDao->setFormInputs($formInputs);
     redirect('./signup.php');
 }
 
@@ -27,12 +31,10 @@ $userDao = new UserDao();
 $user = $userDao->findByEmail($email);
 
 if (!is_null($user)) {
-    $_SESSION['errors'][] = 'すでに登録済みのメールアドレスです';
-}
-if (!empty($_SESSION['errors'])) {
+    $sessionDao->pushErrors('すでに登録済みのメールアドレスです');
     redirect('./signup.php');
 }
 
 $userDao->create($name, $email, $password);
-$_SESSION['message'] = '登録できました。';
+$sessionDao->setMessage('登録できました。');
 redirect('./signin.php');

@@ -3,7 +3,7 @@ namespace App\Infrastructure\Dao;
 
 use PDO;
 
-abstract class Dao
+abstract class MySqlDao
 {
     const DB_USER = 'root';
     const DB_PASSWORD = 'password';

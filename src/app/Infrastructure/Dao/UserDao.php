@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Infrastructure\Dao;
 
 require_once __DIR__ . '/../../../vendor/autoload.php';
@@ -8,7 +9,7 @@ use PDO;
 /**
  * ユーザー情報を操作するDAO
  */
-final class UserDao extends Dao
+final class UserDao extends MySqlDao
 {
     /**
      * DBのテーブル名

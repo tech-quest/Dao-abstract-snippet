@@ -1,10 +1,14 @@
 <?php
-session_start();
-$errors = $_SESSION['errors'] ?? [];
-unset($_SESSION['errors']);
 
-$successRegistedMessage = $_SESSION['message'] ?? '';
-unset($_SESSION['message']);
+require_once __DIR__ . '/../../app/Infrastructure/Dao/SessionDao.php';
+
+use App\Infrastructure\Dao\SessionDao;
+
+$sessionDao = new SessionDao();
+$errors = $sessionDao->getErrorsWithClear();
+$successRegistedMessage = $sessionDao->getMessageWithClear();
+$formInputs = $sessionDao->getFormInputsWithClear();
+$email = $formInputs['email'] ?? '';
 ?>
 
 <!DOCTYPE html>
@@ -29,11 +33,7 @@ unset($_SESSION['message']);
                 <?php endforeach; ?>
             <?php endif; ?>
             <form class="px-4" action="./signin_complete.php" method="POST">
-                <p><input class="border-2 border-gray-300 mb-5 w-full" type=“text” name="email" type="email" required placeholder="Email" value="<?php if (
-                    isset($_SESSION['email'])
-                ) {
-                    echo $_SESSION['email'];
-                } ?>"></p>
+                <p><input class="border-2 border-gray-300 mb-5 w-full" type=“text” name="email" type="email" required placeholder="Email" value="<?php echo $email; ?>"></p>
                 <p><input class="border-2 border-gray-300 mb-5 w-full" type="password" placeholder="Password" name="password"></p>
                 <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded mb-5 w-full" type="submit">ログイン</button>
             </form>

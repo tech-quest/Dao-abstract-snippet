@@ -1,10 +1,15 @@
 <?php
-session_start();
-$errors = $_SESSION['errors'] ?? [];
-unset($_SESSION['errors']);
 
-$name = $_SESSION['formInputs']['name'] ?? '';
-$email = $_SESSION['formInputs']['email'] ?? '';
+use App\Infrastructure\Dao\SessionDao;
+
+require_once __DIR__ . '/../../app/Infrastructure/Dao/SessionDao.php';
+
+$sessionDao = new SessionDao();
+$errors = $sessionDao->getErrorsWithClear();
+
+$formInputs = $sessionDao->getFormInputs();
+$name = $formInputs['name'] ?? '';
+$email = $formInputs['email'] ?? '';
 ?>
 
 <!DOCTYPE html>

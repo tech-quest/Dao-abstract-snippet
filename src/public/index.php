@@ -1,8 +1,14 @@
 <?php
+
 require_once __DIR__ . '/../app/Infrastructure/Redirect/redirect.php';
+require_once __DIR__ . '/../app/Infrastructure/Dao/SessionDao.php';
 require_once __DIR__ . '/../vendor/autoload.php';
-session_start();
-if (!isset($_SESSION['formInputs']['userId'])) {
+
+use App\Infrastructure\Dao\SessionDao;
+
+$sessionDao = new SessionDao();
+$loginUser = $sessionDao->getAuth();
+if (is_null($loginUser)) {
     redirect('./user/signin.php');
 }
 ?>

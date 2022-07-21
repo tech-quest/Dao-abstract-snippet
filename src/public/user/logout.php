@@ -1,10 +1,11 @@
 <?php
-require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
-session_start();
 
-$_SESSION = [];
-if (isset($_COOKIE[session_name()])) {
-    setcookie(session_name(), '', time() - 4200, '/');
-}
-session_destroy();
+use App\Infrastructure\Dao\SessionDao;
+
+require_once __DIR__ . '/../../app/Infrastructure/Redirect/redirect.php';
+require_once __DIR__ . '/../../app/Infrastructure/Dao/SessionDao.php';
+
+$sessionDao = new SessionDao();
+$sessionDao->destoryAll();
+
 redirect('./signin.php');
